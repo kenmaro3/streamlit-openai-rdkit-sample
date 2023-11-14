@@ -8,12 +8,11 @@ from langchain.memory import ConversationBufferMemory
 from langchain.prompts.chat import MessagesPlaceholder, SystemMessage
 from langchain.agents import Tool
 
-
 from langchain.tools import DuckDuckGoSearchRun, WikipediaQueryRun
+from rdkit_tool import RDKitTool
 
 openai.api_key = os.environ['OPENAI_API_KEY']
 duck_search = DuckDuckGoSearchRun()
-#wiki_search = WikipediaQueryRun()
 
 
 verbose = True
@@ -22,6 +21,17 @@ langchain.debug = verbose
 import streamlit as st
 
 st.title('化学GPTと話す🤩')
+
+st.markdown("""
+## 質問サンプル
+例えばこのような質問をしてみましょう。
+
+- 初めまして！あなたは誰ですか？
+- 薬理活性化合物とはなんですか？
+- 薬理活性化合物の例を３つ挙げてください。名前と用途を教えてください。
+- ペニシリンのSMILES表記を教えてください。
+
+""")
 
 llm = ChatOpenAI(
     temperature=0,
@@ -34,6 +44,7 @@ tools = [
         func=duck_search.run,
         description="useful for when you need to answer questions about current events."
     ),
+    RDKitTool()
     # Tool(
     #     name = "WikiSearch",
     #     func=wiki_search.run,
@@ -45,8 +56,9 @@ PROMPT="""
     あなたは化学の専門家です。
     ユーザからの科学の質問について回答してあげてください。
     もし質問がわからない場合は、予測や推測をせずに、「どんな内容についてお調べですか？」と回答してください。
-    SMILES表記を求められた場合は、DuckSearchツールを用いて化学物質データベースを検索し、正確な解答をしてください。
-    正確にわからない場合は、「正確にわかりません」と回答してください。
+    特定の化学物質に対してSMILES表記を求められた場合はRDKitToolを用いてSMILES記法を回答してください。
+    また、RDKitToolを用いる際は、化学物質は英語を入力することに気をつけてください。
+    正確にわからない場合は、「正確にはわかりません」と回答してください。
 """
 
 memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
