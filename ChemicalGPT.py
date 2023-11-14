@@ -1,4 +1,6 @@
+import os
 import langchain
+import openai
 from langchain.chat_models import ChatOpenAI
 from langchain.agents import AgentType, initialize_agent, load_tools
 from langchain.callbacks import StreamlitCallbackHandler
@@ -8,8 +10,11 @@ from langchain.agents import Tool
 
 
 from langchain.tools import DuckDuckGoSearchRun, WikipediaQueryRun
+
+openai.api_key = os.environ['OPENAI_API_KEY']
 duck_search = DuckDuckGoSearchRun()
 #wiki_search = WikipediaQueryRun()
+
 
 verbose = True
 langchain.debug = verbose
