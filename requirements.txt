@@ -3,3 +3,4 @@ openai==0.28.1
 streamlit==1.26.0
 stmol==0.0.7
 py3Dmol==2.0.4
+duckduckgo-search==3.9.5
